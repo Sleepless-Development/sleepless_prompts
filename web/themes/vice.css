@@ -1,0 +1,88 @@
+[data-theme="vice"] {
+  --ink: 12, 4, 18;
+  --surface: 22, 8, 28;
+  --surface-2: 36, 12, 44;
+  --text: 255, 236, 248;
+  --text-muted: 214, 150, 196;
+  --hairline: 255, 120, 190;
+  --hairline-a: 0.35;
+  --primary: 255, 64, 180;
+  --on-accent: 12, 4, 18;
+  --cyan: 64, 220, 255;
+  --error: 184, 62, 62;
+  --r-md: 0.9rem;
+  --r-lg: 1.1rem;
+  --font: "DINPRO", "Segoe UI", sans-serif;
+  --panel-a: 0.92;
+  --fill: rgba(var(--surface), var(--panel-a));
+  --shadow: 0 0.8rem 2rem rgba(40, 0, 40, 0.45);
+}
+
+[data-theme="vice"] body {
+  font-family: var(--font);
+  color: rgb(var(--text));
+  font-synthesis: none;
+}
+
+[data-theme="vice"] .group {
+  gap: 0.55rem;
+  padding: 0.85rem 1.05rem;
+  border: 0.14rem solid transparent;
+  border-radius: var(--r-md);
+  background-color: transparent;
+  background-image:
+    linear-gradient(var(--fill), var(--fill)),
+    linear-gradient(90deg, rgb(var(--hairline)), rgb(var(--primary)) 48%, rgb(var(--cyan)));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 180, 220, 0.16),
+    var(--shadow);
+}
+
+[data-theme="vice"] .label,
+[data-theme="vice"] .hold-prefix {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+[data-theme="vice"] .hold-prefix {
+  color: rgb(var(--text-muted));
+}
+
+[data-theme="vice"] .item.is-active .label {
+  color: rgb(var(--primary));
+  text-shadow: 0 0 0.8rem rgba(var(--primary), 0.55);
+}
+
+[data-theme="vice"] .icon-fallback {
+  border: 0.12rem solid transparent;
+  border-radius: 0.45rem;
+  background-color: transparent;
+  background-image:
+    linear-gradient(rgba(var(--ink), 0.7), rgba(var(--ink), 0.7)),
+    linear-gradient(90deg, rgb(var(--hairline)), rgb(var(--cyan)));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  color: rgb(var(--text));
+}
+
+[data-theme="vice"] .hold-fill {
+  background: linear-gradient(90deg, rgb(var(--hairline)), rgb(var(--primary)) 48%, rgb(var(--cyan)));
+  box-shadow:
+    -0.2rem 0 0.6rem rgba(var(--primary), 0.4),
+    0.2rem 0 0.6rem rgba(var(--cyan), 0.35);
+}
+
+[data-theme="vice"] .sep {
+  color: rgb(var(--text-muted));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="vice"] {
+    --panel-a: 1;
+    --fill: rgba(var(--surface), 1);
+  }
+}

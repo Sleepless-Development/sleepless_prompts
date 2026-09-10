@@ -1,0 +1,72 @@
+[data-theme="noir"] {
+  --ink: 8, 8, 8;
+  --surface: 10, 10, 10;
+  --text: 244, 244, 240;
+  --text-muted: 168, 168, 162;
+  --hairline: 240, 240, 236;
+  --hairline-a: 1;
+  --primary: 240, 240, 236;
+  --on-accent: 8, 8, 8;
+  --error: 184, 62, 62;
+  --font: "DINPRO", "Segoe UI", sans-serif;
+  --panel-a: 0.94;
+}
+
+[data-theme="noir"] body {
+  font-family: var(--font);
+  color: rgb(var(--text));
+  font-synthesis: none;
+}
+
+[data-theme="noir"] .group {
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-style: solid;
+  border-width: 0.28rem 0.1rem;
+  border-color: rgb(var(--text));
+  border-radius: 0;
+  background: rgba(var(--surface), var(--panel-a));
+}
+
+[data-theme="noir"] .label,
+[data-theme="noir"] .hold-prefix {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-theme="noir"] .hold-prefix {
+  color: rgb(var(--text-muted));
+}
+
+[data-theme="noir"] .item.is-active .label {
+  color: rgb(var(--primary));
+}
+
+[data-theme="noir"] .icon-fallback {
+  border: 0.14rem solid rgb(var(--text));
+  border-radius: 50%;
+  background: rgba(var(--surface), var(--panel-a));
+  color: rgb(var(--text));
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  box-shadow:
+    0 0 0 0.14rem rgba(var(--ink), 0.9),
+    0 0 0 0.24rem rgb(var(--text));
+}
+
+[data-theme="noir"] .hold-fill {
+  background: rgb(var(--primary));
+  box-shadow: none;
+}
+
+[data-theme="noir"] .sep {
+  color: rgb(var(--text-muted));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="noir"] {
+    --panel-a: 1;
+  }
+}

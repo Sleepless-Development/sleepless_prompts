@@ -1,0 +1,80 @@
+[data-theme="industrial"] {
+  --ink: 10, 10, 8;
+  --surface: 18, 18, 16;
+  --surface-2: 28, 28, 24;
+  --text: 230, 228, 214;
+  --text-muted: 156, 152, 128;
+  --hairline: 196, 176, 96;
+  --hairline-a: 0.4;
+  --primary: 212, 168, 48;
+  --on-accent: 10, 10, 8;
+  --error: 184, 62, 62;
+  --font: "DINPRO", "Segoe UI", sans-serif;
+  --panel-a: 0.94;
+}
+
+[data-theme="industrial"] body {
+  font-family: var(--font);
+  color: rgb(var(--text));
+  font-synthesis: none;
+}
+
+[data-theme="industrial"] .group {
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 0.12rem solid rgba(var(--hairline), var(--hairline-a));
+  border-radius: 0;
+  background-color: rgba(var(--surface), var(--panel-a));
+  background-image:
+    radial-gradient(circle at 0.34rem 0.34rem, rgb(var(--hairline)) 0.06rem, rgb(var(--ink)) 0.09rem, rgb(var(--hairline)) 0.13rem, transparent 0.15rem),
+    radial-gradient(circle at calc(100% - 0.34rem) 0.34rem, rgb(var(--hairline)) 0.06rem, rgb(var(--ink)) 0.09rem, rgb(var(--hairline)) 0.13rem, transparent 0.15rem),
+    radial-gradient(circle at 0.34rem calc(100% - 0.34rem), rgb(var(--hairline)) 0.06rem, rgb(var(--ink)) 0.09rem, rgb(var(--hairline)) 0.13rem, transparent 0.15rem),
+    radial-gradient(circle at calc(100% - 0.34rem) calc(100% - 0.34rem), rgb(var(--hairline)) 0.06rem, rgb(var(--ink)) 0.09rem, rgb(var(--hairline)) 0.13rem, transparent 0.15rem);
+  box-shadow: inset 0 -0.16rem 0 rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="industrial"] .label,
+[data-theme="industrial"] .hold-prefix {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+[data-theme="industrial"] .hold-prefix {
+  color: rgb(var(--text-muted));
+}
+
+[data-theme="industrial"] .item.is-active .label {
+  color: rgb(var(--primary));
+}
+
+[data-theme="industrial"] .icon-fallback {
+  border: 0.16rem solid rgba(var(--hairline), 0.75);
+  border-radius: 0;
+  background-color: rgba(var(--surface), var(--panel-a));
+  background-image:
+    radial-gradient(circle at 0.4rem 0.4rem, rgb(var(--hairline)) 0.07rem, rgb(var(--ink)) 0.1rem, rgb(var(--hairline)) 0.15rem, transparent 0.17rem),
+    radial-gradient(circle at calc(100% - 0.4rem) 0.4rem, rgb(var(--hairline)) 0.07rem, rgb(var(--ink)) 0.1rem, rgb(var(--hairline)) 0.15rem, transparent 0.17rem),
+    radial-gradient(circle at 0.4rem calc(100% - 0.4rem), rgb(var(--hairline)) 0.07rem, rgb(var(--ink)) 0.1rem, rgb(var(--hairline)) 0.15rem, transparent 0.17rem),
+    radial-gradient(circle at calc(100% - 0.4rem) calc(100% - 0.4rem), rgb(var(--hairline)) 0.07rem, rgb(var(--ink)) 0.1rem, rgb(var(--hairline)) 0.15rem, transparent 0.17rem);
+  color: rgb(var(--text));
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  box-shadow: inset 0 -0.2rem 0 rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="industrial"] .hold-fill {
+  background: rgb(var(--primary));
+  box-shadow: none;
+}
+
+[data-theme="industrial"] .sep {
+  color: rgb(var(--text-muted));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="industrial"] {
+    --panel-a: 1;
+  }
+}

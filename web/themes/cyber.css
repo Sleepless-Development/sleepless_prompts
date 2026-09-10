@@ -1,0 +1,142 @@
+[data-theme="cyber"] {
+  --ink: 3, 8, 14;
+  --surface: 4, 12, 20;
+  --surface-2: 8, 22, 32;
+  --text: 180, 245, 255;
+  --text-muted: 80, 170, 190;
+  --hairline: 0, 229, 255;
+  --hairline-a: 1;
+  --primary: 0, 229, 255;
+  --on-accent: 3, 8, 14;
+  --error: 184, 62, 62;
+  --cut: 0.9rem;
+  --rim: 0.14rem;
+  --clip: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%
+  );
+  --font: "DINPRO", "Segoe UI", sans-serif;
+  --panel-a: 0.94;
+}
+
+[data-theme="cyber"] body {
+  font-family: var(--font);
+  color: rgb(var(--text));
+  font-synthesis: none;
+}
+
+[data-theme="cyber"] .group {
+  isolation: isolate;
+  overflow: visible;
+  gap: 0.55rem;
+  padding: 0.9rem 1.2rem 0.9rem 0.95rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-theme="cyber"] .group::before,
+[data-theme="cyber"] .group::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+[data-theme="cyber"] .group::before {
+  inset: 0;
+  z-index: 0;
+  background: rgb(var(--primary));
+  clip-path: var(--clip);
+}
+
+[data-theme="cyber"] .group::after {
+  inset: var(--rim);
+  z-index: 1;
+  background: rgba(var(--surface), var(--panel-a));
+  clip-path: var(--clip);
+}
+
+[data-theme="cyber"] .item,
+[data-theme="cyber"] .sep {
+  z-index: 2;
+}
+
+[data-theme="cyber"] .label,
+[data-theme="cyber"] .hold-prefix {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+[data-theme="cyber"] .hold-prefix {
+  color: rgb(var(--text-muted));
+}
+
+[data-theme="cyber"] .item.is-active .label {
+  color: rgb(var(--primary));
+}
+
+[data-theme="cyber"] .icon-fallback {
+  --cut: 0.45rem;
+  --rim: 0.1rem;
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: rgb(var(--primary));
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+[data-theme="cyber"] .icon-fallback::before,
+[data-theme="cyber"] .icon-fallback::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+[data-theme="cyber"] .icon-fallback::before {
+  inset: 0;
+  z-index: -2;
+  background: rgb(var(--primary));
+  clip-path: var(--clip);
+}
+
+[data-theme="cyber"] .icon-fallback::after {
+  inset: var(--rim);
+  z-index: -1;
+  background: rgba(var(--ink), 0.92);
+  clip-path: var(--clip);
+}
+
+[data-theme="cyber"] .hold {
+  z-index: 2;
+}
+
+[data-theme="cyber"] .hold-fill {
+  background: rgb(var(--primary));
+  box-shadow: none;
+}
+
+[data-theme="cyber"] .sep {
+  color: rgb(var(--primary));
+}
+
+[data-theme="cyber"] .group[data-layout="column"] .sep,
+[data-theme="cyber"] .group[data-separator="none"][data-layout="row"] .sep,
+[data-theme="cyber"] .group[data-separator="line"][data-layout="row"] .sep {
+  background: rgb(var(--primary));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="cyber"] {
+    --panel-a: 1;
+  }
+}
