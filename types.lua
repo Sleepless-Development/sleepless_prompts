@@ -26,16 +26,16 @@
 ---@field y number Offset in rem
 
 ---@class PromptEntry
----@field id? string Unique id within the group. Defaults to the key name.
+---@field id? string Unique id within the group. Defaults to control_N, the keybind name, or the key name.
 ---@field name? string Alias for id
 ---@field label string Visible label
----@field key? string | string[] Keyboard and/or shared input name (E, LMB, LT, ...)
----@field keyboard? string | string[] Keyboard-only override
----@field gamepad? string | string[] Gamepad-only override (Xbox layout: A south, B east, X west, Y north)
----@field keybind? string | table ox_lib keybind name, or the CKeybind table from lib.addKeybind. Keyboard icon follows the live mapping.
+---@field key? string | string[] Optional icon override. Not needed when control or keybind is set.
+---@field keyboard? string | string[] Keyboard-only icon override
+---@field gamepad? string | string[] Gamepad-only icon override (Xbox layout: A south, B east, X west, Y north)
+---@field keybind? string | table ox_lib / FiveM keybind name, or the CKeybind table from lib.addKeybind. Keyboard icon follows the live RegisterKeyMapping bind and updates when the player remaps it.
 ---@field icon? string | string[] Raw image path, skips icon lookup
----@field control? number GTA control index. When set, presses are tracked and hooks fire.
----@field disableControl? boolean Disable the GTA control while this prompt is shown
+---@field control? number GTA control index. Presses are tracked, hooks fire, and keyboard/gamepad icons follow the live mapping via GetControlInstructionalButton, including player remaps.
+---@field disableControl? boolean Disable the GTA control while this prompt is shown, via lib.disableControls
 ---@field holdTime? number Hold duration in ms. Prefixes the localized Hold word, fills a progress bar, and fires onHold / held.
 ---@field cooldown? number Ignore further presses for this many ms after press or hold
 ---@field disabled? boolean Dimmed, non-interactive
@@ -162,7 +162,7 @@ function exports.sleepless_prompts:getStyle() end
 ---@return PromptDevice
 function exports.sleepless_prompts:getDevice() end
 
---- Current keyboard key for an ox_lib keybind name or CKeybind table.
+--- Current keyboard key for an ox_lib / FiveM keybind name or CKeybind table. Follows remaps.
 ---@param name string | table
 ---@return string?
 function exports.sleepless_prompts:getKeybindKey(name) end

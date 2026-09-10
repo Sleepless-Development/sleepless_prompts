@@ -1,5 +1,6 @@
 local utils = require 'client.modules.utils'
 local store = require 'client.modules.store'
+local keybind = require 'client.modules.keybind'
 
 local icons = {}
 
@@ -64,6 +65,12 @@ local KEYBOARD_STEMS = {
     rshift = 'T_Shift_Key',
     shiftleft = 'T_Shift_Key',
     shiftright = 'T_Shift_Key',
+    leftshift = 'T_Shift_Key',
+    rightshift = 'T_Shift_Key',
+    leftctrl = 'T_Crtl_Key',
+    rightctrl = 'T_Crtl_Key',
+    leftcontrol = 'T_Crtl_Key',
+    rightcontrol = 'T_Crtl_Key',
     tab = 'T_Tab_Key',
     caps = 'T_CapsLock_Key',
     capslock = 'T_CapsLock_Key',
@@ -130,10 +137,12 @@ local KEYBOARD_STEMS = {
     lmb = 'T_Mouse_Left_Key',
     mouse1 = 'T_Mouse_Left_Key',
     leftclick = 'T_Mouse_Left_Key',
+    leftmousebutton = 'T_Mouse_Left_Key',
     mouseright = 'T_Mouse_Right_Key',
     rmb = 'T_Mouse_Right_Key',
     mouse2 = 'T_Mouse_Right_Key',
     rightclick = 'T_Mouse_Right_Key',
+    rightmousebutton = 'T_Mouse_Right_Key',
     mousemiddle = 'T_Mouse_Middle_Key',
     mmb = 'T_Mouse_Middle_Key',
     mouse3 = 'T_Mouse_Middle_Key',
@@ -169,6 +178,8 @@ local KEYBOARD_EXCEPTIONS = {
 }
 
 KEYBOARD_EXCEPTIONS.mousescroll = KEYBOARD_EXCEPTIONS.scroll
+KEYBOARD_EXCEPTIONS.scrollwheelup = KEYBOARD_EXCEPTIONS.scrollup
+KEYBOARD_EXCEPTIONS.scrollwheeldown = KEYBOARD_EXCEPTIONS.scrolldown
 
 local GAMEPAD_ALIASES = {
     cross = 'a',
@@ -425,20 +436,9 @@ function icons.path(name)
     return nil, name
 end
 
----@param entry table
+---@param names string | string[]
 ---@return string[], string[]
-function icons.resolve(entry)
-    if entry.icon then
-        return utils.ensureArray(entry.icon), {}
-    end
-
-    local names
-    if store.usingKeyboard then
-        names = entry.keyboard or entry.key or entry.gamepad
-    else
-        names = entry.gamepad or entry.key or entry.keyboard
-    end
-
+local function resolveNames(names)
     names = utils.ensureArray(names)
     local srcs = {}
     local fallbacks = {}
@@ -452,6 +452,16 @@ function icons.resolve(entry)
     end
 
     return srcs, fallbacks
+end
+
+---@param entry table
+---@return string[], string[]
+function icons.resolve(entry)
+    if entry.icon then
+        return utils.ensureArray(entry.icon), {}
+    end
+
+    return resolveNames(keybind.namesForEntry(entry))
 end
 
 return icons

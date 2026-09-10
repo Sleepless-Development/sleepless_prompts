@@ -8,6 +8,29 @@ local function isControlIndex(control)
 end
 
 local input = {}
+local disabled = {}
+
+local function setDisabled(nextDisabled)
+    for control in pairs(disabled) do
+        if not nextDisabled[control] then
+            lib.disableControls:Remove(control)
+        end
+    end
+    for control in pairs(nextDisabled) do
+        if not disabled[control] then
+            lib.disableControls:Add(control)
+        end
+    end
+    disabled = nextDisabled
+end
+
+function input.flushDisables()
+    if not next(disabled) then return end
+    for control in pairs(disabled) do
+        lib.disableControls:Remove(control)
+    end
+    disabled = {}
+end
 
 local function emit(name, groupId, promptId, entry)
     TriggerEvent(('sleepless_prompts:%s'):format(name), groupId, promptId, entry)
@@ -76,6 +99,7 @@ end
 
 function input.tick()
     local now = GetGameTimer()
+    local nextDisabled = {}
 
     for groupId, group in pairs(store.groups) do
         if store.paused and not group.persistOnPause then goto continue end
@@ -86,7 +110,7 @@ function input.tick()
             local control = isControlIndex(entry.control) and entry.control or nil
             if (control or entry.keybind) and not entry.disabled and not entry.hidden and not restrictions.blocked(entry, group) then
                 if control and entry.disableControl then
-                    DisableControlAction(0, control, true)
+                    nextDisabled[control] = true
                 end
 
                 local cooldownUntil = entry._cooldownUntil or 0
@@ -149,6 +173,8 @@ function input.tick()
         ::continue::
     end
 
+    setDisabled(nextDisabled)
+    lib.disableControls()
     keybind.endTick()
 end
 

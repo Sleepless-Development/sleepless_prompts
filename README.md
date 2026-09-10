@@ -1,6 +1,6 @@
 # sleepless_prompts
 
-A FiveM HUD library for on-screen input prompts. Keyboard and gamepad icons, live updates, and named screen slots.
+A FiveM HUD library for on-screen input prompts. Keyboard and gamepad icons, live remapping, and named screen slots.
 
 ![](https://img.shields.io/github/downloads/Sleepless-Development/sleepless_prompts/total?logo=github)
 ![](https://img.shields.io/github/downloads/Sleepless-Development/sleepless_prompts/latest/total?logo=github)
@@ -36,10 +36,10 @@ client_script '@sleepless_prompts/init.lua'
 prompts.show('vehicle', {
     position = 'bottom-center',
     prompts = {
-        { id = 'enter', key = 'E', gamepad = 'A', label = 'Enter', control = 38 },
-        { id = 'lock', key = 'L', gamepad = 'X', label = 'Lock' },
-        { id = 'trunk', key = 'G', gamepad = 'B', label = 'Trunk' },
-        { id = 'engine', key = 'F', gamepad = 'Y', label = 'Engine', control = 23, holdTime = 1500 },
+        { id = 'enter', label = 'Enter', control = 38 },
+        { id = 'lock', label = 'Lock', control = 182 },
+        { id = 'horn', label = 'Horn', control = 86 },
+        { id = 'engine', label = 'Engine', control = 23, holdTime = 1500 },
     },
 })
 
@@ -48,9 +48,28 @@ prompts.setPosition('vehicle', 'top-right')
 prompts.hide('vehicle')
 ```
 
+Set `control` or `keybind`. Icons are resolved from the live mapping. `key` / `keyboard` / `gamepad` are optional overrides, or for prompts that are not a GTA control or FiveM keybind.
+
+### Live remapping
+
+Icons update when the player remaps input. This applies to both:
+
+- **GTA controls** (`control`): keyboard and gamepad glyphs come from `GetControlInstructionalButton`. Remap INPUT_PICKUP from E to G, or move it to another pad button, and the prompt follows.
+- **FiveM / ox_lib keybinds** (`keybind`): the keyboard icon comes from the live `RegisterKeyMapping` bind. Remap it under Settings > Key Bindings > FiveM and the prompt follows.
+
+The HUD also swaps keyboard vs gamepad icons when the last input device changes (`auto` mode).
+
+### GTA controls
+
+```lua
+{ id = 'enter', label = 'Enter', control = 38, disableControl = true }
+```
+
+`disableControl` adds that control to `lib.disableControls` while the prompt is shown.
+
 ### ox_lib keybinds
 
-Pass the keybind `name` from `lib.addKeybind`. The keyboard icon tracks the live mapping and updates if the player remaps it in GTA settings.
+Pass the keybind `name` from `lib.addKeybind`, or the table it returns.
 
 ```lua
 lib.addKeybind({
@@ -62,14 +81,14 @@ lib.addKeybind({
 
 prompts.show('vehicle', {
     prompts = {
-        { keybind = 'vehicle_enter', gamepad = 'A', label = 'Enter' },
+        { keybind = 'vehicle_enter', label = 'Enter' },
     },
 })
 ```
 
-You can also pass the table returned by `lib.addKeybind`. `prompts.getKeybindKey('vehicle_enter')` returns the current key.
+`prompts.getKeybindKey('vehicle_enter')` returns the current keyboard key.
 
-Icons follow the current input device. Keyboard and mouse names (`E`, `LMB`, `Shift`) swap to gamepad automatically when `gamepad` is set. Gamepad names use Xbox layout (A south, B east, X west, Y north). PlayStation (DualSense) faces remap from that.
+Icons follow the current input device. Gamepad names use Xbox layout (A south, B east, X west, Y north). PlayStation (DualSense) faces remap from that.
 
 ### Icon styles
 
@@ -119,8 +138,8 @@ prompts.setPosition('vehicle', { x = 82, y = 18, origin = 'top-right' })
 ```lua
 prompts.update('vehicle', { position = 'middle-left', layout = 'column' })
 prompts.updatePrompt('vehicle', 'lock', { disabled = true })
-prompts.addPrompt('vehicle', { key = 'H', gamepad = 'LB', label = 'Horn', control = 86 })
-prompts.removePrompt('vehicle', 'trunk')
+prompts.addPrompt('vehicle', { label = 'Horn', control = 86 })
+prompts.removePrompt('vehicle', 'horn')
 ```
 
 ### Hooks
@@ -142,11 +161,11 @@ Hold prompts fill while the control is held, then fire `held` / `onHold`.
 Same trigger options as interact. One of these runs on press, or when `holdTime` completes:
 
 ```lua
-{ label = 'Lock', key = 'L', control = 182, event = 'myresource:lockVehicle' }
-{ label = 'Engine', key = 'F', holdTime = 1500, serverEvent = 'myresource:toggleEngine' }
+{ label = 'Lock', control = 182, event = 'myresource:lockVehicle' }
+{ label = 'Engine', control = 23, holdTime = 1500, serverEvent = 'myresource:toggleEngine' }
 { label = 'Wave', key = 'G', command = 'e wave' }
-{ label = 'Open', key = 'E', onSelect = function(data) end }
-{ label = 'Use', key = 'E', export = 'useItem' }
+{ label = 'Open', control = 38, onSelect = function(data) end }
+{ label = 'Use', keybind = 'my_use', export = 'useItem' }
 ```
 
 Priority: `onSelect`, `export`, `event`, `serverEvent`, `command`.
@@ -169,7 +188,7 @@ With `debug = true`, use:
 - `/prompts gamepad playstation`
 - `/prompts style dark`
 - `/prompts style white retro`
-- `/prompts keybind` remap `sleepless_prompts_demo` in GTA settings and watch the icon change
+- `/prompts keybind` remap `sleepless_prompts_demo` under Settings > Key Bindings > FiveM and watch the icon change
 - `/prompts hide`
 
 ## License

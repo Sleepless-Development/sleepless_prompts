@@ -86,11 +86,14 @@ function keybind.parse(value)
 end
 
 ---@param hash number
+---@param preferFrontend? boolean
 ---@return string
-function keybind.raw(hash)
-    local raw = GetControlInstructionalButton(0, hash, true)
+function keybind.raw(hash, preferFrontend)
+    local first = preferFrontend and 2 or 0
+    local second = preferFrontend and 0 or 2
+    local raw = GetControlInstructionalButton(first, hash, true)
     if not raw or raw == '' then
-        raw = GetControlInstructionalButton(2, hash, true)
+        raw = GetControlInstructionalButton(second, hash, true)
     end
     return raw or ''
 end
@@ -98,22 +101,165 @@ end
 ---@param raw string
 ---@return string?
 function keybind.human(raw)
-    if raw == '' then return end
+    if not raw or raw == '' then return end
 
-    if raw:sub(1, 2) == 't_' then
+    local prefix = raw:sub(1, 2):lower()
+    if prefix == 't_' or prefix == 'w_' then
         return raw:sub(3):lower()
     end
 
-    local mapped = SPECIAL[raw]
+    local mapped = SPECIAL[raw] or SPECIAL[raw:lower()]
     if mapped then
         return mapped
     end
 
-    if raw:sub(1, 2) == 'b_' then
+    if prefix == 'b_' then
         return raw:sub(3)
     end
 
     return raw
+end
+
+---@param raw string
+---@return string[]?
+function keybind.humans(raw)
+    if not raw or raw == '' then return end
+
+    local names = {}
+    local count = 0
+    local start = 1
+    local len = #raw
+
+    while start <= len do
+        local sep = raw:find('%', start, true)
+        local token = sep and raw:sub(start, sep - 1) or raw:sub(start)
+        local human = keybind.human(token)
+        if human and human ~= '' then
+            count += 1
+            names[count] = human
+        end
+        if not sep then break end
+        start = sep + 1
+    end
+
+    if count == 0 then return end
+    return names
+end
+
+---@param a string | string[] | nil
+---@param b string | string[] | nil
+---@return boolean
+local function sameNames(a, b)
+    if a == b then return true end
+    if type(a) ~= 'table' or type(b) ~= 'table' then return false end
+    if #a ~= #b then return false end
+    for i = 1, #a do
+        if a[i] ~= b[i] then return false end
+    end
+    return true
+end
+
+---@param names string[]
+---@return string | string[]
+local function storeNames(names)
+    if #names == 1 then return names[1] end
+    return names
+end
+
+---@param entry table
+---@return boolean
+function keybind.capture(entry)
+    local raw
+    local field
+    if entry._keybindHash then
+        raw = keybind.raw(entry._keybindHash)
+        field = '_keybindRaw'
+    elseif type(entry.control) == 'number' then
+        raw = keybind.raw(entry.control, true)
+        field = '_controlRaw'
+    else
+        return false
+    end
+
+    local changed = raw ~= entry[field]
+    entry[field] = raw
+
+    local names = keybind.humans(raw)
+    if names then
+        local liveField = IsUsingKeyboard(0) and '_liveKeyboard' or '_liveGamepad'
+        local stored = storeNames(names)
+        if not sameNames(entry[liveField], stored) then
+            entry[liveField] = stored
+            changed = true
+        end
+    end
+
+    return changed
+end
+
+local PAD_DEFAULTS = {
+    [0] = 'back',
+    [21] = 'a',
+    [22] = 'x',
+    [23] = 'y',
+    [24] = 'rt',
+    [25] = 'lt',
+    [26] = 'rsclick',
+    [29] = 'rsclick',
+    [36] = 'lsclick',
+    [37] = 'lb',
+    [38] = 'lb',
+    [44] = 'rb',
+    [45] = 'b',
+    [46] = 'dpadright',
+    [47] = 'dpadleft',
+    [51] = 'dpadright',
+    [52] = 'dpadleft',
+    [73] = 'a',
+    [74] = 'dpadright',
+    [75] = 'y',
+    [76] = 'rb',
+    [86] = 'lsclick',
+    [140] = 'b',
+    [141] = 'a',
+    [142] = 'rt',
+    [143] = 'x',
+    [177] = 'b',
+    [182] = 'rt',
+    [191] = 'a',
+    [194] = 'b',
+    [201] = 'a',
+    [202] = 'b',
+    [203] = 'x',
+    [204] = 'y',
+    [205] = 'lb',
+    [206] = 'rb',
+    [207] = 'lt',
+    [208] = 'rt',
+    [257] = 'rt',
+}
+
+---@param control number
+---@return string?
+function keybind.gamepadDefault(control)
+    return PAD_DEFAULTS[control]
+end
+
+---@param entry table
+---@return string | string[] | nil
+function keybind.namesForEntry(entry)
+    keybind.capture(entry)
+    if store.usingKeyboard then
+        return entry._liveKeyboard or entry.keyboard or entry.key
+    end
+    return entry._liveGamepad or entry.gamepad or keybind.gamepadDefault(entry.control)
+end
+
+---@param control number
+---@return string[]?
+function keybind.namesForControl(control)
+    if type(control) ~= 'number' then return end
+    return keybind.humans(keybind.raw(control, true))
 end
 
 ---@param value string | table | number
@@ -130,17 +276,7 @@ end
 ---@param entry table
 ---@return boolean
 function keybind.syncEntry(entry)
-    if not entry._keybindHash then return false end
-
-    local raw = keybind.raw(entry._keybindHash)
-    if raw == entry._keybindRaw then return false end
-
-    entry._keybindRaw = raw
-    local human = keybind.human(raw)
-    if human then
-        entry.keyboard = human
-    end
-    return true
+    return keybind.capture(entry)
 end
 
 ---@return table[]
@@ -204,7 +340,8 @@ function keybind.hasBindings()
     for _, group in pairs(store.groups) do
         local prompts = group.prompts
         for i = 1, #prompts do
-            if prompts[i].keybind then
+            local entry = prompts[i]
+            if entry.keybind or type(entry.control) == 'number' then
                 return true
             end
         end

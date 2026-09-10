@@ -1,5 +1,6 @@
 local store = require 'client.modules.store'
 local nui = require 'client.modules.nui'
+local keybind = require 'client.modules.keybind'
 
 local device = {}
 
@@ -54,6 +55,32 @@ function device.refresh()
     if detected then
         device.apply(detected)
     end
+end
+
+function device.poll()
+    if store.mode ~= 'auto' then return false end
+
+    local usingKeyboard = IsUsingKeyboard(0)
+    if usingKeyboard == store.usingKeyboard then
+        if not usingKeyboard then
+            device.refresh()
+        end
+        return false
+    end
+
+    store.usingKeyboard = usingKeyboard
+    keybind.syncAll()
+    if not usingKeyboard then
+        device.refresh()
+    end
+    nui.setDevice(usingKeyboard, store.gamepad)
+    nui.refreshAll()
+    TriggerEvent('sleepless_prompts:deviceChanged', usingKeyboard and 'keyboard' or 'gamepad', store.gamepad)
+    local list = store.hooks.deviceChanged
+    for i = 1, #list do
+        list[i](usingKeyboard and 'keyboard' or 'gamepad', store.gamepad)
+    end
+    return true
 end
 
 RegisterNUICallback('gamepadDetected', function(data, cb)

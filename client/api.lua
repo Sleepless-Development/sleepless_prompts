@@ -5,6 +5,10 @@ local nui = require 'client.modules.nui'
 local icons = require 'client.modules.icons'
 local keybind = require 'client.modules.keybind'
 
+local function kickRuntime()
+    require('client.modules.runtime').start()
+end
+
 local function emit(name, id, group)
     TriggerEvent(('sleepless_prompts:%s'):format(name), id, group)
     local list = store.hooks[name]
@@ -24,13 +28,22 @@ local function normalizePrompt(entry, index)
     end
 
     assert(entry.label, 'prompt.label is required')
-    assert(entry.key or entry.keyboard or entry.gamepad or entry.icon or entry.keybind, 'prompt needs key, keyboard, gamepad, icon, or keybind')
+    assert(
+        type(entry.control) == 'number' or entry.keybind or entry.key or entry.keyboard or entry.gamepad or entry.icon,
+        'prompt needs control, keybind, key, keyboard, gamepad, or icon'
+    )
 
     local id = entry.id or entry.name
     if not id then
-        local source = entry.key or entry.keyboard or entry.gamepad or entry.label
-        if type(source) == 'table' then source = source[1] end
-        id = source and tostring(source):lower() or ('prompt_%s'):format(index)
+        if type(entry.control) == 'number' then
+            id = ('control_%s'):format(entry.control)
+        elseif entry.keybind then
+            id = type(entry.keybind) == 'table' and entry.keybind.name or entry.keybind
+        else
+            local source = entry.key or entry.keyboard or entry.gamepad or entry.label
+            if type(source) == 'table' then source = source[1] end
+            id = source and tostring(source):lower() or ('prompt_%s'):format(index)
+        end
     end
 
     local prompt = {
@@ -71,10 +84,10 @@ local function normalizePrompt(entry, index)
         local name, hash = keybind.parse(entry.keybind)
         prompt.keybind = name
         prompt._keybindHash = hash
-        prompt._keybindRaw = keybind.raw(hash)
-        prompt.keyboard = keybind.human(prompt._keybindRaw) or prompt.keyboard
         keybind.watch(name)
     end
+
+    keybind.capture(prompt)
 
     return prompt
 end
@@ -134,6 +147,7 @@ function prompts.show(idOrData, data)
     store.groups[id] = group
     nui.upsertGroup(group)
     emit(existed and 'updated' or 'shown', id, group)
+    kickRuntime()
     return id
 end
 
@@ -159,6 +173,7 @@ function prompts.update(id, data)
 
     nui.upsertGroup(group)
     emit('updated', id, group)
+    kickRuntime()
 end
 
 ---@param groupId string
@@ -180,12 +195,14 @@ function prompts.updatePrompt(groupId, promptId, patch)
                 local name, hash = keybind.parse(patch.keybind)
                 entry.keybind = name
                 entry._keybindHash = hash
-                entry._keybindRaw = keybind.raw(hash)
-                entry.keyboard = keybind.human(entry._keybindRaw) or entry.keyboard
                 keybind.watch(name)
+            end
+            if patch.keybind or patch.control ~= nil then
+                keybind.capture(entry)
             end
             nui.upsertGroup(group)
             emit('updated', groupId, group)
+            kickRuntime()
             return
         end
     end
@@ -202,6 +219,7 @@ function prompts.addPrompt(groupId, entry)
     group.prompts[#group.prompts + 1] = normalized
     nui.upsertGroup(group)
     emit('updated', groupId, group)
+    kickRuntime()
     return normalized.id
 end
 
@@ -313,6 +331,7 @@ function prompts.setMode(mode)
     nui.setDevice(store.usingKeyboard, store.gamepad)
     nui.refreshAll()
     emit('deviceChanged', store.usingKeyboard and 'keyboard' or 'gamepad', store.gamepad)
+    kickRuntime()
 end
 
 ---@return 'auto' | 'keyboard' | 'xbox' | 'playstation'
