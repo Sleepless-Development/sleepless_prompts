@@ -6,9 +6,9 @@ A FiveM HUD library for on-screen input prompts. Keyboard and gamepad icons, liv
 ![](https://img.shields.io/github/downloads/Sleepless-Development/sleepless_prompts/latest/total?logo=github)
 ![](https://img.shields.io/github/contributors/Sleepless-Development/sleepless_prompts?logo=github)
 ![](https://img.shields.io/github/v/release/Sleepless-Development/sleepless_prompts?logo=github)\
-[![](https://badges.5metrics.dev/sleepless_interact/serverRank.svg?style=for-the-badge)](https://5metrics.dev/resource/sleepless_prompts)
-[![](https://badges.5metrics.dev/sleepless_interact/servers.svg?style=for-the-badge)](https://5metrics.dev/resource/sleepless_prompts)
-[![](https://badges.5metrics.dev/sleepless_interact/players.svg?style=for-the-badge)](https://5metrics.dev/resource/sleepless_prompts)
+[![](https://badges.5metrics.dev/sleepless_prompts/serverRank.svg?style=for-the-badge)](https://5metrics.dev/resource/sleepless_prompts)
+[![](https://badges.5metrics.dev/sleepless_prompts/servers.svg?style=for-the-badge)](https://5metrics.dev/resource/sleepless_prompts)
+[![](https://badges.5metrics.dev/sleepless_prompts/players.svg?style=for-the-badge)](https://5metrics.dev/resource/sleepless_prompts)
 
 ## Dependencies
 
