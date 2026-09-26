@@ -44,6 +44,21 @@ if config.debug then
             return
         end
 
+        if sub == 'world' then
+            local coords = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 1.2, 0.0)
+            local id = prompts.addCoords(coords, {
+                name = 'debug_world',
+                label = 'Nearby',
+                control = 38,
+                distance = 2.5,
+                onSelect = function(data)
+                    lib.print.info(data)
+                end,
+            })
+            print(('sleepless_prompts: world prompt %s'):format(id))
+            return
+        end
+
         if sub == 'gamepad' then
             if args[2] then
                 prompts.setGamepad(args[2])

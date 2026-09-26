@@ -51,6 +51,38 @@ prompts.setPosition('vehicle', 'top-right')
 prompts.hide('vehicle')
 ```
 
+### World targets
+
+Register a prompt on a point or an entity and it shows while the player is in range. Distance is to the entity origin or the coord. `name` is the id you pass to `remove*`. The same `name` from the same resource replaces that prompt.
+
+```lua
+local id = prompts.addCoords(vec3(100.0, 200.0, 30.0), {
+    name = 'open_stash',
+    label = 'Open',
+    control = 38,
+    distance = 2.0,
+    onSelect = function(data)
+        print(data.coordId, data.coords, data.distance)
+    end,
+})
+
+prompts.addLocalEntity(ped, { name = 'talk', label = 'Talk', control = 38, distance = 2.5 })
+prompts.addEntity(netId, { name = 'trunk', label = 'Trunk', control = 47 })
+prompts.addModel(`prop_atm_01`, { name = 'atm', label = 'Use ATM', control = 38, distance = 1.5 })
+prompts.addGlobalVehicle({
+    name = 'lock',
+    label = 'Lock',
+    control = 182,
+    distance = 4.0,
+    allowInVehicle = true,
+})
+
+prompts.removeCoords(id)
+prompts.removeGlobalVehicle('lock')
+```
+
+Several targets can show at once. Model and global prompts attach to the closest matching entity and merge with prompts registered on that entity. `hide` clears the HUD. `remove*` unregisters the prompt. Stopping your resource does too.
+
 Set `control` or `keybind`. Icons are resolved from the live mapping. `key` / `keyboard` / `gamepad` are optional overrides, or for prompts that are not a GTA control or FiveM keybind.
 
 ### Live remapping
@@ -192,6 +224,7 @@ With `debug = true`, use:
 - `/prompts style dark`
 - `/prompts style white retro`
 - `/prompts keybind` remap `sleepless_prompts_demo` under Settings > Key Bindings > FiveM and watch the icon change
+- `/prompts world` register a prompt 1.2m in front of the player
 - `/prompts hide`
 
 ## License

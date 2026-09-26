@@ -3,6 +3,9 @@ local config = {}
 -- enable /prompts test command
 config.debug = false
 
+-- default distance for world prompts that omit distance
+config.defaultPromptDistance = 2.0
+
 -- default slot when show() omits position
 -- top-left | top-center | top-right
 -- middle-left | center | middle-right

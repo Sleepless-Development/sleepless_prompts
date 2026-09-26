@@ -44,28 +44,51 @@ end
 ---@param entry table
 ---@param groupId string
 ---@param group table
+---@param forServer? boolean
 ---@return table
-local function getResponse(entry, groupId, group)
-    return {
+local function getResponse(entry, groupId, group, forServer)
+    local response = {
         id = entry.id,
         name = entry.id,
         label = entry.label,
         groupId = groupId,
-        resource = group.resource,
+        resource = entry.resource or group.resource,
     }
+
+    if not group.entity and not group.coords and not group.coordId then
+        return response
+    end
+
+    local entity = group.entity or 0
+    if entity ~= 0 and not DoesEntityExist(entity) then
+        entity = 0
+    end
+
+    local coords = group.coords
+    if forServer and entity ~= 0 then
+        entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or 0
+    end
+
+    response.entity = entity
+    response.coords = coords
+    response.distance = coords and #(GetEntityCoords(cache.ped) - coords) or group.distance
+    response.coordId = group.coordId
+    return response
 end
 
 ---@param entry table
 ---@param groupId string
 ---@param group table
 local function trigger(entry, groupId, group)
+    local resource = entry.resource or group.resource
+
     if entry.onSelect then
         entry.onSelect(getResponse(entry, groupId, group))
         return
     end
 
     if entry.export then
-        exports[group.resource][entry.export](nil, getResponse(entry, groupId, group))
+        exports[resource][entry.export](nil, getResponse(entry, groupId, group))
         return
     end
 
@@ -75,7 +98,7 @@ local function trigger(entry, groupId, group)
     end
 
     if entry.serverEvent then
-        TriggerServerEvent(entry.serverEvent, getResponse(entry, groupId, group))
+        TriggerServerEvent(entry.serverEvent, getResponse(entry, groupId, group, true))
         return
     end
 

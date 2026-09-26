@@ -4,6 +4,7 @@ local utils = require 'client.modules.utils'
 local nui = require 'client.modules.nui'
 local icons = require 'client.modules.icons'
 local keybind = require 'client.modules.keybind'
+local world = require 'client.modules.world'
 
 local function kickRuntime()
     require('client.modules.runtime').start()
@@ -78,6 +79,7 @@ local function normalizePrompt(entry, index)
         coords = entry.coords,
         distance = entry.distance,
         name = entry.name or tostring(id),
+        resource = entry.resource,
     }
 
     if entry.keybind then
@@ -479,4 +481,101 @@ function prompts.on(event, cb)
             end
         end
     end
+end
+
+---@param coords vector3 | vector3[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+---@return string | string[]
+function prompts.addCoords(coords, options, settings)
+    return world.addCoords(coords, options, settings)
+end
+
+---@param id string | string[]
+---@param remove? string | string[]
+function prompts.removeCoords(id, remove)
+    world.removeCoords(id, remove)
+end
+
+---@param entityIds number | number[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function prompts.addLocalEntity(entityIds, options, settings)
+    world.addLocalEntity(entityIds, options, settings)
+end
+
+---@param entityIds number | number[]
+---@param remove? string | string[]
+function prompts.removeLocalEntity(entityIds, remove)
+    world.removeLocalEntity(entityIds, remove)
+end
+
+---@param netIds number | number[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function prompts.addEntity(netIds, options, settings)
+    world.addEntity(netIds, options, settings)
+end
+
+---@param netIds number | number[]
+---@param remove? string | string[]
+function prompts.removeEntity(netIds, remove)
+    world.removeEntity(netIds, remove)
+end
+
+---@param models number | string | (number | string)[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function prompts.addModel(models, options, settings)
+    world.addModel(models, options, settings)
+end
+
+---@param models number | string | (number | string)[]
+---@param remove? string | string[]
+function prompts.removeModel(models, remove)
+    world.removeModel(models, remove)
+end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function prompts.addGlobalPed(options, settings)
+    world.addGlobalPed(options, settings)
+end
+
+---@param remove? string | string[]
+function prompts.removeGlobalPed(remove)
+    world.removeGlobalPed(remove)
+end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function prompts.addGlobalVehicle(options, settings)
+    world.addGlobalVehicle(options, settings)
+end
+
+---@param remove? string | string[]
+function prompts.removeGlobalVehicle(remove)
+    world.removeGlobalVehicle(remove)
+end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function prompts.addGlobalObject(options, settings)
+    world.addGlobalObject(options, settings)
+end
+
+---@param remove? string | string[]
+function prompts.removeGlobalObject(remove)
+    world.removeGlobalObject(remove)
+end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function prompts.addGlobalPlayer(options, settings)
+    world.addGlobalPlayer(options, settings)
+end
+
+---@param remove? string | string[]
+function prompts.removeGlobalPlayer(remove)
+    world.removeGlobalPlayer(remove)
 end

@@ -27,7 +27,7 @@
 
 ---@class PromptEntry
 ---@field id? string Unique id within the group. Defaults to control_N, the keybind name, or the key name.
----@field name? string Alias for id
+---@field name? string Alias for id. On world targets, `name` is also the key `remove*` uses. Adding the same name again replaces that prompt.
 ---@field label string Visible label
 ---@field key? string | string[] Optional icon override. Not needed when control or keybind is set.
 ---@field keyboard? string | string[] Keyboard-only icon override
@@ -56,7 +56,15 @@
 ---@field allowInVehicle? boolean If true, the prompt stays available while in a vehicle. Default hides it.
 ---@field entity? number Entity used for canInteract / distance
 ---@field coords? vector3 World coords used for canInteract / distance
----@field distance? number Hide when farther than this from entity/coords
+---@field distance? number Hide when farther than this many meters from the target. World prompts default to `config.defaultPromptDistance`.
+
+---@class PromptWorldSettings
+---@field position? PromptPosition | PromptCustomPosition Slot for this registration. Defaults to `config.defaultPosition`
+---@field offset? PromptOffset
+---@field layout? PromptLayout
+---@field separator? PromptSeparator
+---@field order? number
+---@field distance? number Default distance, in meters, when a prompt omits `distance`
 
 ---@class PromptResponse
 ---@field id string
@@ -64,6 +72,10 @@
 ---@field label string
 ---@field groupId string
 ---@field resource string
+---@field entity? number Client entity handle, or net id when the action is a server event. `0` for coord targets.
+---@field coords? vector3 World point the prompt is attached to
+---@field distance? number Meters from the player to `coords`
+---@field coordId? string Coord id from `addCoords`, when the target is a point
 
 ---@class PromptGroupData
 ---@field id string
@@ -182,3 +194,73 @@ function exports.sleepless_prompts:setColor(color) end
 ---@param cb function
 ---@return fun()
 function exports.sleepless_prompts:on(event, cb) end
+
+--- Register prompts on one point or many. They show while the player is in range. Returns one id, or an array of ids.
+---@param coords vector3 | vector3[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+---@return string | string[]
+function exports.sleepless_prompts:addCoords(coords, options, settings) end
+
+--- Remove prompts from a coord id. Omit `remove` to remove every prompt this resource added there.
+---@param id string | string[]
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeCoords(id, remove) end
+
+--- Register prompts on a local entity handle. The entity must already exist.
+---@param entityIds number | number[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function exports.sleepless_prompts:addLocalEntity(entityIds, options, settings) end
+
+---@param entityIds number | number[]
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeLocalEntity(entityIds, remove) end
+
+--- Register prompts on a network id. The entity can stream in later.
+---@param netIds number | number[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function exports.sleepless_prompts:addEntity(netIds, options, settings) end
+
+---@param netIds number | number[]
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeEntity(netIds, remove) end
+
+--- Register prompts on every entity of a model. The closest matching entity in range gets the prompts.
+---@param models number | string | (number | string)[]
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function exports.sleepless_prompts:addModel(models, options, settings) end
+
+---@param models number | string | (number | string)[]
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeModel(models, remove) end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function exports.sleepless_prompts:addGlobalPed(options, settings) end
+
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeGlobalPed(remove) end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function exports.sleepless_prompts:addGlobalVehicle(options, settings) end
+
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeGlobalVehicle(remove) end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function exports.sleepless_prompts:addGlobalObject(options, settings) end
+
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeGlobalObject(remove) end
+
+---@param options PromptEntry | PromptEntry[]
+---@param settings? PromptWorldSettings
+function exports.sleepless_prompts:addGlobalPlayer(options, settings) end
+
+---@param remove? string | string[]
+function exports.sleepless_prompts:removeGlobalPlayer(remove) end
