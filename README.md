@@ -148,7 +148,7 @@ Players can run `/promptmode` (configurable) to pick Auto, Keyboard, Xbox, or Pl
 
 ### Themes
 
-Looks match Interact. Set `config.theme` to `modern`, `minimal`, `light`, `retro`, `cyber`, `vice`, `noir`, `industrial`, or `fantasy`. Drop `web/themes/<id>.css` to add another.
+Looks match Interact. Set `config.theme` to `modern`, `minimal`, `light`, `retro`, `cyber`, `vice`, `kawaii`, `industrial`, or `fantasy`. Drop `web/themes/<id>.css` to add another.
 
 ```lua
 prompts.setTheme('cyber')

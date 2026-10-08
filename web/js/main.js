@@ -120,8 +120,10 @@ function renderPrompt(prompt) {
 	if (prompt.hold) {
 		const hold = el("div", "hold");
 		const fill = el("div", "hold-fill");
+		const progress = Math.max(0, Math.min(1, prompt.progress || 0));
+		item.style.setProperty("--hold", String(progress));
 		if (!isBrowser || isAd) {
-			fill.style.width = `${Math.max(0, Math.min(1, prompt.progress || 0)) * 100}%`;
+			fill.style.width = `${progress * 100}%`;
 		}
 		hold.appendChild(fill);
 		item.appendChild(hold);
@@ -284,8 +286,10 @@ function patchPrompt(payload) {
 	if (patch.disabled !== undefined) item.classList.toggle("is-disabled", !!patch.disabled);
 	if (patch.active !== undefined) item.classList.toggle("is-active", !!patch.active);
 	if (patch.progress !== undefined) {
+		const progress = Math.max(0, Math.min(1, patch.progress));
+		item.style.setProperty("--hold", String(progress));
 		const fill = item.querySelector(".hold-fill");
-		if (fill) fill.style.width = `${Math.max(0, Math.min(1, patch.progress)) * 100}%`;
+		if (fill) fill.style.width = `${progress * 100}%`;
 	}
 	if (patch.label) {
 		const label = item.querySelector(".label");

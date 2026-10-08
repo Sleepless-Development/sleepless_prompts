@@ -1,0 +1,72 @@
+[data-theme="kawaii"] {
+  --ink: 74, 32, 52;
+  --surface: 255, 248, 251;
+  --surface-2: 255, 228, 238;
+  --text: 74, 32, 52;
+  --text-muted: 176, 104, 132;
+  --hairline: 255, 160, 196;
+  --hairline-a: 0.7;
+  --primary: 255, 111, 168;
+  --on-accent: 255, 255, 255;
+  --on-fill: 255, 255, 255;
+  --error: 184, 62, 62;
+  --r-sm: 999px;
+  --font: "DINPRO", "Segoe UI", sans-serif;
+  --panel-a: 0.94;
+}
+
+[data-theme="kawaii"] body {
+  font-family: var(--font);
+  color: rgb(var(--text));
+  font-synthesis: none;
+}
+
+[data-theme="kawaii"] .group {
+  gap: 0.55rem;
+  padding: 0.7rem 0.9rem;
+  border: 0.1rem solid rgba(var(--hairline), var(--hairline-a));
+  border-radius: var(--r-sm);
+  background: rgba(var(--surface), var(--panel-a));
+}
+
+[data-theme="kawaii"] .label,
+[data-theme="kawaii"] .hold-prefix {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+[data-theme="kawaii"] .hold-prefix {
+  color: rgb(var(--primary));
+}
+
+[data-theme="kawaii"] .item.is-active .label {
+  padding: 0.28rem 0.7rem;
+  border-radius: var(--r-sm);
+  background: rgb(var(--primary));
+  color: rgb(var(--on-fill));
+}
+
+[data-theme="kawaii"] .icon-fallback {
+  border: 0.16rem solid rgb(var(--primary));
+  border-radius: 50%;
+  background: rgb(var(--surface));
+  color: rgb(var(--ink));
+  box-shadow: none;
+}
+
+[data-theme="kawaii"] .hold-fill {
+  background: rgb(var(--primary));
+  box-shadow: none;
+}
+
+[data-theme="kawaii"] .sep {
+  color: rgb(var(--text-muted));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="kawaii"] {
+    --panel-a: 1;
+  }
+}

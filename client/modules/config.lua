@@ -41,18 +41,18 @@ config.iconSize = 2.4
 
 config.versionCheckEnabled = true
 
--- Built-in: modern | minimal | light | retro | cyber | vice | noir | industrial | fantasy
+-- Built-in: modern | minimal | light | retro | cyber | vice | kawaii | industrial | fantasy
 -- Drop web/themes/<id>.css with [data-theme="<id>"] selectors to add another look.
 config.theme = 'modern'
 
 config.themeColors = {
-    modern = { 49, 164, 252, 255 },
+    modern = { 255, 255, 255, 255 },
     minimal = { 168, 186, 204, 255 },
     light = { 37, 99, 235, 255 },
     retro = { 255, 176, 32, 255 },
     cyber = { 0, 229, 255, 255 },
     vice = { 255, 64, 180, 255 },
-    noir = { 240, 240, 236, 255 },
+    kawaii = { 255, 111, 168, 255 },
     industrial = { 212, 168, 48, 255 },
     fantasy = { 212, 175, 110, 255 },
 }

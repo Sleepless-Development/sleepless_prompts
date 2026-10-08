@@ -91,7 +91,7 @@
 
 ---@alias PromptThemeId
 ---| 'modern' | 'minimal' | 'light' | 'retro'
----| 'cyber' | 'vice' | 'noir' | 'industrial' | 'fantasy'
+---| 'cyber' | 'vice' | 'kawaii' | 'industrial' | 'fantasy'
 ---| string
 
 exports.sleepless_prompts = {}
