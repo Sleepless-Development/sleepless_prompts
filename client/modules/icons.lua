@@ -454,11 +454,45 @@ local function resolveNames(names)
     return srcs, fallbacks
 end
 
+---@param value string
+---@return boolean
+local function isImageIcon(value)
+    if type(value) ~= 'string' or value == '' then return false end
+    if value:find('%.%w+$') then return true end
+    return not value:find('^fa[bsr]?[%- ]')
+end
+
+---@param icon string | string[] | nil
+---@return string[]?
+local function imageIcons(icon)
+    if icon == nil then return end
+
+    local list = utils.ensureArray(icon)
+    local images
+    local count = 0
+
+    for i = 1, #list do
+        if isImageIcon(list[i]) then
+            count += 1
+            images = images or {}
+            images[count] = list[i]
+        end
+    end
+
+    return images
+end
+
 ---@param entry table
 ---@return string[], string[]
 function icons.resolve(entry)
-    if entry.icon then
-        return utils.ensureArray(entry.icon), {}
+    local images = imageIcons(entry.icon)
+    if images then
+        local _, keyFallbacks = resolveNames(keybind.namesForEntry(entry))
+        local fallbacks = {}
+        for i = 1, #images do
+            fallbacks[i] = keyFallbacks[i] or keyFallbacks[1] or ''
+        end
+        return images, fallbacks
     end
 
     return resolveNames(keybind.namesForEntry(entry))

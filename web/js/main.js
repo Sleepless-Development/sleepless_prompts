@@ -65,21 +65,23 @@ function renderIcons(target, prompt) {
 	const count = Math.max(icons.length, fallbacks.length);
 
 	for (let i = 0; i < count; i++) {
-		if (i > 0) {
+		const src = icons[i];
+		const fallback = fallbacks[i];
+		if (!src && !fallback) continue;
+
+		if (target.childElementCount > 0) {
 			const plus = el("span", "icon-plus");
 			plus.textContent = "+";
 			target.appendChild(plus);
 		}
 
-		const src = icons[i];
-		const fallback = fallbacks[i] || prompt.label;
-
 		if (src) {
 			const img = el("img", "icon");
 			img.src = src;
-			img.alt = fallback;
+			if (fallback) img.alt = fallback;
 			img.addEventListener("error", () => {
-				img.replaceWith(fallbackNode(fallback));
+				if (fallback) img.replaceWith(fallbackNode(fallback));
+				else img.remove();
 			});
 			target.appendChild(img);
 		} else {
