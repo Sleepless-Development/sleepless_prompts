@@ -5,7 +5,7 @@ game 'gta5'
 
 name 'sleepless_prompts'
 author 'Sleepless Development'
-version '1.3.0'
+version '1.3.1'
 description 'Input prompt HUD library'
 
 ui_page 'web/index.html'
